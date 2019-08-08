@@ -14,7 +14,6 @@ import glob
 ########### OPTS ###########
 tableName = 'tblCruise'
 
-
 def insertSeaFlowCruises():
     server='Rainier'
     tableName = 'tblCruise'

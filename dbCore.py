@@ -33,28 +33,6 @@ def dbConnect(server,db='Opedia', TDS_Version='7.3'):
 
     return conn
 
-'''
-def dbConnect(local=True):
-    try:
-        if local:
-			## Local Database
-			server = 'THEBEAST'
-			db = 'Opedia'
-			conn = pyodbc.connect('DRIVER={SQL Server};SERVER=' + server + ';DATABASE=' + db + ';Trusted_Connection=yes')
-        else:
-			## Cloud (Azure) Database
-			server = ''
-			db = ''
-			Uid = ''
-			psw = ''
-			conn = pyodbc.connect('DRIVER={SQL Server};SERVER=' + server + ';DATABASE=' + db + ';Uid=' + Uid + ';Pwd='+ psw +';Encrypt=yes')
-        #print('Successful Database Connection')
-    except Exception as e:
-        print('Error in Database Connection. Error message: '+str(e))
-    return conn
-'''
-
-
 
 def dbExecute(sql, vals):
 	conn = dbConnect()
@@ -65,10 +43,8 @@ def dbExecute(sql, vals):
 	return
 
 
-
-
-def dbRead(query, usr=cr.usr_rainier, psw=cr.psw_rainier, ip=cr.ip_rainier, port=cr.port_rainier, db='Opedia', TDS_Version='7.3'):
-	conn = dbConnect('Rainier')
+def dbRead(query,server):
+	conn = dbConnect(server)
 	dframe = sql.read_sql(query, conn)
 	conn.close()
 	return dframe

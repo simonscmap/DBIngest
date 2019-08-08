@@ -25,6 +25,15 @@ def toSQLbcp(export_path, tableName,  server):
     os.system(str)
     print('BCP insert finished')
 
+def lineInsert(tableName, columnList ,query, determinator=',', server = 'Rainier'):
+    conn = dc.dbConnect(server)
+    cursor = conn.cursor()
+    insertQuery = """INSERT INTO %s %s VALUES %s """ % (tableName, columnList, query)
+    print(insertQuery)
+    cursor.execute(insertQuery)
+    conn.commit()
+
+    
 def findID_CRUISE(cruiseName):
     """ this function pulls the ID value from the [tblCruises]"""
     server = 'Rainier'

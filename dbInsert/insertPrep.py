@@ -32,6 +32,10 @@ def removeMissings(cols, df):
 def NAtoNone(df):
     df.replace(r'\s+', np.nan, regex=True, inplace=True)
     return df
+    
+def removeLeadingWhiteSpace(df):
+    df.columns = df.columns.str.strip()
+    return df
 
 def renameCol(df, oldColName, newColName):
     df.rename(columns={oldColName: newColName},inplace=True)
