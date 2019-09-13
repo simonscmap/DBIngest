@@ -9,12 +9,13 @@ import insertPrep as ip
 sys.path.append('../summary_stats/')
 import summary_stats_func as ssf
 
-"""KM1709_mesoscope data Catalog Table"""
+"""HOE_legacy_4 data Catalog Table"""
 server = 'Rainier'
-tableName = 'tblKM1709_mesoscope'
-rawFilePath = cfgv.rep_KM1709_mesoscope_raw
-rawFileName = 'mesoscope_cmap_ED.xlsx'
+tableName = 'tblHOE_legacy_4'
+rawFilePath = cfgv.rep_HOE_legacy_4_raw
+rawFileName = 'HOE_legacy_4.xlsx'
 keyword_col = 'var_keywords'
+
 
 ############################
 
@@ -27,7 +28,7 @@ vars_metadata = ip.removeLeadingWhiteSpace(vars_metadata)
 
 """ Strings """
 DB='Opedia'
-Dataset_Name = 'tblKM1709_mesoscope'
+Dataset_Name = 'tblHOE_legacy_4'
 Dataset_Long_Name = dataset_metadata.iloc[0]['dataset_long_name']
 Data_Source = dataset_metadata.iloc[0]['dataset_source']
 Distributor = 'University of Hawaii, Manoa'

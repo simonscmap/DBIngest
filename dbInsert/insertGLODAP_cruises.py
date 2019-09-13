@@ -10,6 +10,7 @@ import numpy as np
 
 ############################
 ########### OPTS ###########
+server = 'Rainier'
 tableName = 'tblGLODAP'
 rawFilePath = cfgv.rep_GLODAP_raw
 rawFileName = 'GLODAPv2.2019_Merged_Master_File.csv'
@@ -81,4 +82,4 @@ export_path, df = makeGLODAP(rawFilePath, rawFileName, tableName)
 
 
 #
-iF.toSQLbcp(export_path, tableName)
+iF.toSQLbcp(export_path, tableName,server)

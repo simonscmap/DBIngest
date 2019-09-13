@@ -8,9 +8,14 @@ import pandas as pd
 ############################
 ########### OPTS ###########
 
+
+server = 'Rainier'
+
+
+
 tableName = 'tblKM1709_mesoscope'
 rawFilePath = cfgv.rep_KM1709_mesoscope_raw
-rawFileName = 'mesoscope_cmap.xlsx'
+rawFileName = 'mesoscope_cmap_ED.xlsx'
 usecols=['Time',
 'Latitude',
 'Longitude',
@@ -36,7 +41,7 @@ usecols=['Time',
 'PC',
 'PN',
 'PP',
-'Psi',
+'PSi',
 'Chlorophyll',
 'Pheopigment',
 'Heterotrophic_Bacteria',
@@ -46,12 +51,14 @@ usecols=['Time',
 
 
 
+
 def makeKM1709_mesoscope(rawFilePath, rawFileName, tableName):
     path = rawFilePath + rawFileName
     prefix = tableName
     exportBase = cfgv.opedia_proj + 'db/dbInsert/export/'
     export_path = '%s%s.csv' % (exportBase, prefix)
-    df = pd.read_excel(path,  sep=',',sheet_name='data', usecols=usecols)
+    df = pd.read_excel(path,  sep=',',sheet_name='data')
+    df.columns = df.columns.str.strip()
     ip.renameCol(df,'Time', 'time')
     ip.renameCol(df,'Latitude', 'lat')
     ip.renameCol(df,'Longitude', 'lon')
@@ -59,13 +66,11 @@ def makeKM1709_mesoscope(rawFilePath, rawFileName, tableName):
     df = ip.removeMissings(['time','lat', 'lon','depth'], df)
     df = ip.NaNtoNone(df)
     df = ip.colDatatypes(df)
-    df = ip.addIDcol(df)
     df = ip.removeDuplicates(df)
     df.to_csv(export_path, index=False)
     ip.sortByTimeLatLonDepth(df, export_path, 'time', 'lat', 'lon', 'depth')
     print('export path: ' ,export_path)
     return export_path
 
-
 export_path = makeKM1709_mesoscope(rawFilePath, rawFileName, tableName)
-iF.toSQLbcp(export_path, tableName)
+iF.toSQLbcp(export_path, tableName,server)

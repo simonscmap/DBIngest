@@ -9,12 +9,13 @@ import insertPrep as ip
 sys.path.append('../summary_stats/')
 import summary_stats_func as ssf
 
-"""KM1709_mesoscope data Catalog Table"""
+"""HL2A_diel_metagenomics data Catalog Table"""
 server = 'Rainier'
-tableName = 'tblKM1709_mesoscope'
-rawFilePath = cfgv.rep_KM1709_mesoscope_raw
-rawFileName = 'mesoscope_cmap_ED.xlsx'
+tableName = 'tblHL2A_diel_metagenomics'
+rawFilePath = cfgv.rep_HL2A_diel_metagenomics_raw
+rawFileName = 'HL2A_cmap_omics_ED_Aug28_final.xlsx'
 keyword_col = 'var_keywords'
+
 
 ############################
 
@@ -27,7 +28,7 @@ vars_metadata = ip.removeLeadingWhiteSpace(vars_metadata)
 
 """ Strings """
 DB='Opedia'
-Dataset_Name = 'tblKM1709_mesoscope'
+Dataset_Name = 'tblHL2A_diel_metagenomics'
 Dataset_Long_Name = dataset_metadata.iloc[0]['dataset_long_name']
 Data_Source = dataset_metadata.iloc[0]['dataset_source']
 Distributor = 'University of Hawaii, Manoa'
@@ -59,7 +60,7 @@ Grid_Mapping_list = ['CRS']  * len(vars_metadata)
 Make_ID_list = ['1'] * len(vars_metadata)#Observation
 Sensor_ID_list = ['2'] * len(vars_metadata) # In-Situ
 Process_ID_list = ['2'] * len(vars_metadata) # Reprocessed
-Study_Domain_ID_list = ['','','','1','1','1','1','1','1','3','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4','4']
+Study_Domain_ID_list = ['','','','11','11','11','3','3','3','11','11','11','11']
 
 # print(DB_list, Dataset_Name_list, short_name_list, long_name_list, unit_list,temporal_res_list, spatial_res_list, Temporal_Coverage_Begin_list, Temporal_Coverage_End_list, Lat_Coverage_Begin_list, Lat_Coverage_End_list, Lon_Coverage_Begin_list, Lon_Coverage_End_list, Grid_Mapping_list,Make_ID_list, Sensor_ID_list, Process_ID_list, Study_Domain_ID_list, comment_list)
 # print(len(DB_list),len(Dataset_Name_list),len(short_name_list),len(long_name_list),len(unit_list),len(temporal_res_list),len(spatial_res_list),len(Temporal_Coverage_Begin_list),len(Temporal_Coverage_End_list),len(Lat_Coverage_Begin_list),len(Lat_Coverage_End_list),len(Lon_Coverage_Begin_list),len(Lon_Coverage_End_list),len(Grid_Mapping_list),len(Make_ID_list),len(Sensor_ID_list),len(Process_ID_list),len(Study_Domain_ID_list),len(comment_list))

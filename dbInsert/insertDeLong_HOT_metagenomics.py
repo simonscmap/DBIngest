@@ -2,20 +2,19 @@ import sys
 sys.path.append('../')
 import insertFunctions as iF
 import insertPrep as ip
+sys.path.append('../../')
 import config_vault as cfgv
 import pandas as pd
 
 ############################
 ########### OPTS ###########
 server = 'Rainier'
-tableName = 'tblHL2A_diel_metagenomics'
-rawFilePath = cfgv.rep_HL2A_diel_metagenomics_raw
-rawFileName = 'HL2A_cmap_omics_ED_Aug28_final.xlsx'
+tableName = 'tblDeLong_HOT_metagenomics'
+rawFilePath = cfgv.rep_DeLong_HOT_metagenomics_raw
+rawFileName = 'SCOPE_HOT_267-283_omics_cmap_ED_final_Aug28final.xlsx'
 
 
-
-
-def makeHL2A_diel_metagenomics(rawFilePath, rawFileName, tableName):
+def makeDeLong_HOT_metagenomics(rawFilePath, rawFileName, tableName):
     path = rawFilePath + rawFileName
     prefix = tableName
     exportBase = cfgv.opedia_proj + 'db/dbInsert/export/'
@@ -37,7 +36,7 @@ def makeHL2A_diel_metagenomics(rawFilePath, rawFileName, tableName):
     # return df
     return export_path
 
-# df = makeHL2A_diel_metagenomics(rawFilePath, rawFileName, tableName)
+# df = makeDeLong_HOT_metagenomics(rawFilePath, rawFileName, tableName)
 #
-export_path = makeHL2A_diel_metagenomics(rawFilePath, rawFileName, tableName)
+export_path = makeDeLong_HOT_metagenomics(rawFilePath, rawFileName, tableName)
 iF.toSQLbcp(export_path, tableName,server)

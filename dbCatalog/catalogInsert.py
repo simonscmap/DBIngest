@@ -12,16 +12,15 @@ import credentials as cr
 
 """ Supporting/catalog table insert functions"""
 
-def lineInsert(tableName, columnList ,query, determinator=',', server = 'Rainier'):
+def lineInsert(server,tableName, columnList ,query):
     conn = dc.dbConnect(server)
     cursor = conn.cursor()
     insertQuery = """INSERT INTO %s %s VALUES %s """ % (tableName, columnList, query)
-    print(insertQuery)
     cursor.execute(insertQuery)
     conn.commit()
 
 
-def findID(datasetName, catalogTable, server = 'Rainier'):
+def findID(datasetName, catalogTable, server):
     """ this function pulls the ID value from the [tblDatasets] for the tblDataset_References to use """
     conn = dc.dbConnect(server)
     cursor = conn.cursor()

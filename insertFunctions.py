@@ -20,20 +20,21 @@ def toSQLbcp(export_path, tableName,  server):
         ip=cr.ip_beast
         port = cr.port_beast
 
+
     print('Inserting Bulk %s into %s.' % (tableName[3:], tableName))
     str = """bcp Opedia.dbo.""" + tableName + """ in """ + export_path + """ -e error -c -t, -U  """ + usr + """ -P """ + psw + """ -S """ + ip + """,""" + port
     os.system(str)
     print('BCP insert finished')
 
-def lineInsert(tableName, columnList ,query, determinator=',', server = 'Rainier'):
+def lineInsert(server, tableName, columnList ,query):
     conn = dc.dbConnect(server)
     cursor = conn.cursor()
     insertQuery = """INSERT INTO %s %s VALUES %s """ % (tableName, columnList, query)
     print(insertQuery)
-    cursor.execute(insertQuery)
-    conn.commit()
+    # cursor.execute(insertQuery)
+    # conn.commit()
 
-    
+
 def findID_CRUISE(cruiseName):
     """ this function pulls the ID value from the [tblCruises]"""
     server = 'Rainier'
@@ -102,3 +103,52 @@ def findSpatialBounds(tableName):
     dates = df.iloc[0].values
     return {'minLat':dates[0],
      'maxLat':dates[1],  'minLon':dates[2],  'maxLon':dates[3]}
+
+# HTML beautifying funciton grabbed from: https://stackoverflow.com/questions/47704441/applying-styling-to-pandas-dataframe-saved-to-html-file
+def write_to_html_file(df, title, filename):
+    '''
+    Write an entire dataframe to an HTML file with nice formatting.
+    '''
+
+    result = '''
+<html>
+<head>
+<style>
+
+    h2 {
+        text-align: center;
+        font-family: Helvetica, Arial, sans-serif;
+    }
+    table {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 5px;
+        text-align: center;
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 90%;
+    }
+    table tbody tr:hover {
+        background-color: #dddddd;
+    }
+    .wide {
+        width: 90%;
+    }
+
+</style>
+</head>
+<body>
+    '''
+    result += '<h2> %s </h2>\n' % title
+    result += df.to_html(classes='wide', escape=False, index=False,header=False)
+    result += '''
+</body>
+</html>
+'''
+    with open(filename, 'w') as f:
+        f.write(result)
