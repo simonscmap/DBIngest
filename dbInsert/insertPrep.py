@@ -3,11 +3,11 @@ import numpy as np
 import pandas as pd
 
 
-def convertYYYYMMDD(df):
+def convertYYYYMMDD(df, col):
     # df['time'] = pd.to_datetime(df['time'].astype(str), format='%Y-%m-%d')
-    df['time'] = pd.to_datetime(df['time'].astype(str))
+    df[col] = pd.to_datetime(df[col].astype(str))
 
-    df['time'] = df['time'].dt.strftime('%Y-%m-%d %H:%M:%S')
+    df[col] = df[col].dt.strftime('%Y-%m-%d %H:%M:%S')
     return df
 
 def removeColumn(cols, df):
@@ -32,7 +32,7 @@ def removeMissings(cols, df):
 def NAtoNone(df):
     df.replace(r'\s+', np.nan, regex=True, inplace=True)
     return df
-    
+
 def removeLeadingWhiteSpace(df):
     df.columns = df.columns.str.strip()
     return df

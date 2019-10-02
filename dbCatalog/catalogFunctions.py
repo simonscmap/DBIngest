@@ -170,12 +170,7 @@ def tblKeywords(df,Dataset_Name, keyword_col,tableName,server):
 #         # cI.lineInsert(server,'[opedia].[dbo].[tblDataset_References]', columnList, query)
 #     print('Inserting data into tblDataset_References')
 
-def updateStatsTable(tableName, JSON):
-    conn = dc.dbConnect(server)
-    cursor = conn.cursor()
-    insertQuery = """INSERT INTO tblDataset_Stats (Dataset_Name, JSON_stats) VALUES('%s','%s')""" % (tableName, JSON)
-    cursor.execute(insertQuery)
-    conn.commit()
+
 
 def normalize_df(df):
     normalized_df = pd.DataFrame(columns = ['time','lat','lon','depth'],index=['min','max'])
@@ -183,42 +178,3 @@ def normalize_df(df):
         normalized_df[val[4:]].loc['min'] = df['min_' +val[4:]][0]
         normalized_df[val[4:]].loc['max'] = df['max_' +val[4:]][0]
     return normalized_df
-
-def updateStats(tableName, server):
-    print(tableName,sensor)
-    conn = dc.dbConnect(server)
-    if sensor == 2 and tableName != 'tblArgoMerge_REP' and tableName != 'tblWOA_Climatology': # ie, in-situ data
-        try:
-            query = 'SELECT * FROM %s' % (tableName)
-            df = dc.dbRead(query,server)
-            stats_df = df.describe()
-            min_max_df = pd.DataFrame({'time':[np.min(df['time']),np.max(df['time'])]},index=['min','max'])
-            df = pd.concat([stats_df,min_max_df],axis=1, sort=True)
-        except:
-            print(tableName, ' not inserted')
-    elif sensor != '2' or tableName == 'tblArgoMerge_REP' or tableName == 'tblWOA_Climatology': # ie, in-situ data
-        try:
-            query = 'SELECT min(time) as min_time,max(time) as max_time,min(lat) as min_lat,max(lat) as max_lat,min(lon) as min_lon,max(lon) as max_lon, min(depth) as min_depth,max(depth) as max_depth FROM %s' % (tableName)
-            df = dc.dbRead(query,server)
-        except:
-            try:
-                query = 'SELECT min(time) as min_time,max(time) as max_time,min(lat) as min_lat,max(lat) as max_lat,min(lon) as min_lon,max(lon) as max_lon FROM %s' % (tableName)
-                df = dc.dbRead(query,server)
-            except:
-                try:
-                    query = 'SELECT min(lat) as min_lat,max(lat) as max_lat,min(lon) as min_lon,max(lon) as max_lon,min(depth) as min_depth,max(depth) as max_depth FROM %s' % (tableName)
-                    df = dc.dbRead(query,server)
-                except:
-                    try:
-                        query = 'SELECT min(lat) as min_lat,max(lat) as max_lat,min(lon) as min_lon,max(lon) as max_lon FROM %s' % (tableName)
-                        df = dc.dbRead(query,server)
-                    except:
-                        print(tableName, ' not inserted')
-        try:
-            df = normalize_df(df)
-        except:
-            print(tableName, ' not inserted')
-
-    json_str  = df.to_json(date_format = 'iso')
-    sql_df = pd.DataFrame({'Table_Name': [tableName], 'JSON': [json_str]})
-    updateStatsTable(tableName, json_str)

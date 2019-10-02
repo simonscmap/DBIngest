@@ -3,7 +3,7 @@ import sys
 sys.path.append('../login')
 sys.path.append('../../config')
 import pandas as pd
-import config_vault as cfgv
+# import config_vault as cfgv
 import credentials as cr
 sys.path.append('../')
 import dbCore as dc
@@ -19,7 +19,6 @@ def toSQLbcp(export_path, tableName,  server):
         psw=cr.psw_beast
         ip=cr.ip_beast
         port = cr.port_beast
-
 
     print('Inserting Bulk %s into %s.' % (tableName[3:], tableName))
     str = """bcp Opedia.dbo.""" + tableName + """ in """ + export_path + """ -e error -c -t, -U  """ + usr + """ -P """ + psw + """ -S """ + ip + """,""" + port
@@ -105,7 +104,7 @@ def findSpatialBounds(tableName):
      'maxLat':dates[1],  'minLon':dates[2],  'maxLon':dates[3]}
 
 # HTML beautifying funciton grabbed from: https://stackoverflow.com/questions/47704441/applying-styling-to-pandas-dataframe-saved-to-html-file
-def write_to_html_file(df, title, filename):
+def write_to_html_file(df, title, filename,header=True, title_opt=False):
     '''
     Write an entire dataframe to an HTML file with nice formatting.
     '''
@@ -144,9 +143,11 @@ def write_to_html_file(df, title, filename):
 </head>
 <body>
     '''
-    result += '<h2> %s </h2>\n' % title
-    result += df.to_html(classes='wide', escape=False, index=False,header=False)
-    result += '''
+    if title_opt == True:
+        result += '<h2> %s </h2>\n' % title
+    else:
+        result += df.to_html(classes='wide', escape=False, index=False,header=header)
+        result += '''
 </body>
 </html>
 '''
