@@ -80,4 +80,4 @@ Study_Domain_ID_list = ['','','1','1','1','1','1','1','1','1','1','1','1','1','1
 #
 # """ new ssf function updates"""
 # ssf.buildVarDFSmallTables(tableName,server)
-cF.lineInsert('tblDataset_Cruises', '(Dataset_ID, Cruise_ID)', '(114,595)',server)
+# cF.lineInsert('tblDataset_Cruises', '(Dataset_ID, Cruise_ID)', '(114,595)',server)

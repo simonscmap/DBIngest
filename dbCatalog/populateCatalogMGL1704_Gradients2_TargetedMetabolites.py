@@ -74,9 +74,9 @@ Study_Domain_ID_list = ['6'] * len(vars_metadata)
 # cF.tblDatasets(DB, Dataset_Name, Dataset_Long_Name, Variables, Data_Source, Distributor, Description, Climatology,server)
 # cF.tblDataset_References(Dataset_Name, reference_list,server)
 # cF.tblVariables(DB_list, Dataset_Name_list, short_name_list, long_name_list, unit_list,temporal_res_list, spatial_res_list, Temporal_Coverage_Begin_list, Temporal_Coverage_End_list, Lat_Coverage_Begin_list, Lat_Coverage_End_list, Lon_Coverage_Begin_list, Lon_Coverage_End_list, Grid_Mapping_list,Make_ID_list, Sensor_ID_list, Process_ID_list, Study_Domain_ID_list, comment_list,server)
-cF.tblKeywords(vars_metadata, Dataset_Name,keyword_col,tableName,server)
+# cF.tblKeywords(vars_metadata, Dataset_Name,keyword_col,tableName,server)
 
 """ new ssf function updates"""
-ssf.buildVarDFSmallTables(tableName,server)
+# ssf.buildVarDFSmallTables(tableName,server)
 """ add to Datasets_Cruises table """
-cF.lineInsert('tblDataset_Cruises', '(Dataset_ID, Cruise_ID)', '(116,593)',server)
+# cF.lineInsert('tblDataset_Cruises', '(Dataset_ID, Cruise_ID)', '(116,593)',server)
