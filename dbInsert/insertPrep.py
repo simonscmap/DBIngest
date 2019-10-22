@@ -29,6 +29,11 @@ def removeMissings(cols, df):
         df.dropna(subset=[col], inplace=True)
     return df
 
+def replaceMissings(missing_val,df):
+    for col in df.columns:
+        df[col].replace(missing_val,'',inplace=True)
+    return df
+
 def NAtoNone(df):
     df.replace(r'\s+', np.nan, regex=True, inplace=True)
     return df
