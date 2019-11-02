@@ -1,5 +1,5 @@
 
-import numpy as np
+import pycmap
 import pandas as pd
 import sys
 sys.path.append('../')
@@ -7,9 +7,110 @@ import dbCore as dc
 import catalogInsert as cI
 sys.path.append('../login')
 import credentials as cr
-
+import geopandas as gpd
+import shapely
+import calendar
 
 """ Supporting/catalog table insert functions"""
+
+
+def addDFtoKeywordDF(master_df, df,axis=0):
+    df = pd.DataFrame({'cruise_keywords': df.values.flatten()})
+    merge_df = pd.concat([master_df,df], ignore_index=True,sort=False)
+    return merge_df
+
+def removeAnyRedundantWord(df): # takes dataframe and collapses to list, then rebuilds as single col dataframe
+    old_list = df.values.flatten()
+    new_list = [i.split() for i in old_list]
+    newer_list = [item for items in new_list for item in items]
+    set_keywords = list(set(newer_list))
+    df_set = pd.DataFrame({'cruise_keywords': set_keywords})
+    return df_set
+
+def getCruiseDetails(cruise_name):
+    """input: cruise name, returns: dataframe of cruise details"""
+    api = pycmap.API()
+    df = api.cruise_by_name(cruise_name)
+    details_df = pd.DataFrame({'Nickname': df['Nickname'],'Name': df['Name'],'Ship_Name': df['Ship_Name'],'Chief_Name': df['Chief_Name']})
+    return details_df
+
+
+def getCruiseYear(cruise_name):
+    """input: cruise name, returns: dataframe of year"""
+    api = pycmap.API()
+    traj = api.cruise_trajectory(cruise_name)
+    traj['date'] = pd.to_datetime(traj['time'])
+    traj['year'] =  traj['date'].dt.year
+    unique_year_df = pd.DataFrame({'Year': traj['year'].unique()})
+    unique_year_df['Year'] = unique_year_df['Year'].astype(str).str.strip()
+    return unique_year_df
+
+
+def getCruiseMonths(cruise_name):
+    """input: cruise name, returns: dataframe of unique months during cruise"""
+    api = pycmap.API()
+    traj = api.cruise_trajectory(cruise_name)
+    traj['date'] = pd.to_datetime(traj['time'])
+    traj['month_abbr'] =  traj['date'].dt.month.apply(lambda x: calendar.month_abbr[x])
+    traj['month_name'] =  traj['date'].dt.month.apply(lambda x: calendar.month_name[x])
+    unique_months_abbr_df = pd.DataFrame({'Month': traj['month_abbr'].unique()})
+    unique_months_name_df = pd.DataFrame({'Month': traj['month_name'].unique()})
+    month_df = pd.concat([unique_months_abbr_df,unique_months_name_df],ignore_index=True,sort=False)
+    return month_df
+
+def getCruiseSeasons(cruise_name): #gets unique seasons of a cruise. Northern seasons used as a ref. Winter: Dec,Jan,Feb Spring: Mar,Apr,May Summer: June,July,Aug Fall: Sept,Oct,Nov
+    """input: cruise name, returns: dataframe of northern hemisphere seasons during cruise"""
+    api = pycmap.API()
+    traj = api.cruise_trajectory(cruise_name)
+    traj['date'] = pd.to_datetime(traj['time'])
+    seasons = ['Winter', 'Winter', 'Spring', 'Spring', 'Spring', 'Summer', 'Summer', 'Summer', 'Fall', 'Fall', 'Fall', 'Winter']
+    month_to_season = dict(zip(range(1,13), seasons))
+    traj['seasons'] = traj['date'].dt.month.map(month_to_season)
+    unique_seasons_df = pd.DataFrame({'Season - Northern Hemisphere': traj['seasons'].unique()})
+    return unique_seasons_df
+
+"""function gets cruise trajectory and does a spatial join on a longhurst biogeochem province to get the province code, description and prevailing winds
+-input cruise name, returns dataframe of unique prov code and desc"""
+def getLonghurstProv(cruise_name):
+    api = pycmap.API()
+    traj = api.cruise_trajectory(cruise_name)
+    longhurst_gdf = gpd.read_file('../spatialData/longhurst_v4_2010/longhurst_v4_2010_added_ocean_names.gpkg')
+    traj_gdf = gpd.GeoDataFrame(traj.drop(['lat', 'lon'], axis=1),
+                                crs={'init': 'epsg:4326'},
+                                geometry=[shapely.geometry.Point(yx) for yx in zip(traj.lon, traj.lat)])
+    cruise_longhurst = gpd.sjoin(traj_gdf,longhurst_gdf,how='inner',op='intersects')
+    prov_df = pd.DataFrame({'ProvCode': cruise_longhurst['ProvCode'].unique(), 'ProvDescr': cruise_longhurst['ProvDescr'].unique()})
+    prov_df['Wind'], prov_df['ProvDescr'] = prov_df['ProvDescr'].str.split('-', 1).str
+    return prov_df
+
+def getOceanName(cruise_name):
+    api = pycmap.API()
+    traj = api.cruise_trajectory(cruise_name)
+    longhurst_gdf = gpd.read_file('../spatialData/longhurst_v4_2010/longhurst_v4_2010_added_ocean_names.gpkg')
+    traj_gdf = gpd.GeoDataFrame(traj.drop(['lat', 'lon'], axis=1),
+                                crs={'init': 'epsg:4326'},
+                                geometry=[shapely.geometry.Point(yx) for yx in zip(traj.lon, traj.lat)])
+    cruise_longhurst = gpd.sjoin(traj_gdf,longhurst_gdf,how='inner',op='intersects')
+    ocean_df = pd.DataFrame({'Ocean': cruise_longhurst['Ocean'].unique()})
+    ocean_df = ocean_df.dropna()
+    return ocean_df
+
+
+"""input: cruise name, returns: dataframe of cruise variable long names"""
+def getCruiseAssosiatedLongName(cruise_name):
+    api = pycmap.API(token=cr.api_key)
+    df = api.cruise_variables(cruise_name)
+    cruise_LN = pd.DataFrame({'Long_Name': df['Long_Name']})
+    return cruise_LN
+
+
+def stripWhitespace(df,col):
+    df[col] = df[col].str.strip()
+    return df
+
+def removeDuplicates(df):
+    df = df.drop_duplicates(keep='first')
+    return df
 
 def lineInsert(tableName, columnList ,query, server):
     conn = dc.dbConnect(server)
