@@ -9,13 +9,13 @@ import catalogFunctions as cF
 
 
 """-----------------------------"""
-"""KOK1606_GRAD1 CRUISE KEYWORDS"""
+"""KOK1805 CRUISE KEYWORDS"""
 """-----------------------------"""
 
-cruise_name = 'KOK1606'
+cruise_name = 'KOK1805'
 server = 'Rainier'
 rawFilePath = cfgv.rep_cruise_keywords_raw
-rawFileName = 'KOK1606.xlsx'
+rawFileName = 'KOK1805.xlsx'
 keyword_col = 'cruise_keywords'
 
 

@@ -9,17 +9,18 @@ import catalogFunctions as cF
 
 
 """-----------------------------"""
-"""KOK1606_GRAD1 CRUISE KEYWORDS"""
+""" AMT04 CRUISE KEYWORDS"""
 """-----------------------------"""
 
-cruise_name = 'KOK1606'
+cruise_name = 'AMT04'
 server = 'Rainier'
 rawFilePath = cfgv.rep_cruise_keywords_raw
-rawFileName = 'KOK1606.xlsx'
+rawFileName = 'AMT04.xlsx'
 keyword_col = 'cruise_keywords'
 
 
 ############################
+""" Reads in the keyword excel file"""
 """ Reads in the keyword excel file"""
 df = pd.read_excel(rawFilePath + rawFileName)
 

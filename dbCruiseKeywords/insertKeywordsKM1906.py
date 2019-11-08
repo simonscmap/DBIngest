@@ -6,22 +6,24 @@ import config_vault as cfgv
 import pandas as pd
 sys.path.append('../dbCatalog/')
 import catalogFunctions as cF
+# from cruise_keyword_dict import cruise_keyword_dict
 
 
 """-----------------------------"""
-"""KOK1606_GRAD1 CRUISE KEYWORDS"""
+"""KM1906_GRAD3 CRUISE KEYWORDS"""
 """-----------------------------"""
 
-cruise_name = 'KOK1606'
+cruise_name = 'KM1906'
 server = 'Rainier'
 rawFilePath = cfgv.rep_cruise_keywords_raw
-rawFileName = 'KOK1606.xlsx'
+rawFileName = 'KM1906.xlsx'
 keyword_col = 'cruise_keywords'
 
 
 ############################
 """ Reads in the keyword excel file"""
 df = pd.read_excel(rawFilePath + rawFileName)
+
 
 ID = cF.getCruiseID(cruise_name)
 prov_df = cF.getLonghurstProv(cruise_name)
@@ -31,7 +33,6 @@ months_df = cF.getCruiseMonths(cruise_name)
 years_df = cF.getCruiseYear(cruise_name)
 details_df = cF.getCruiseDetails(cruise_name)
 short_name_df = cF.getCruiseAssosiatedShortName(cruise_name)
-# long_name_df = cF.getCruiseAssosiatedLongName(cruise_name)
 short_name_syn_df = cF.getShortNameSynonyms(cruise_name)
 
 df = cF.addDFtoKeywordDF(df, short_name_syn_df)

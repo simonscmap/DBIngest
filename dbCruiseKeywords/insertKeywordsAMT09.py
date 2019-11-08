@@ -9,13 +9,32 @@ import catalogFunctions as cF
 
 
 """-----------------------------"""
-"""KOK1606_GRAD1 CRUISE KEYWORDS"""
+""" AMT09 CRUISE KEYWORDS"""
 """-----------------------------"""
 
-cruise_name = 'KOK1606'
+cruise_name = 'AMT09'
 server = 'Rainier'
 rawFilePath = cfgv.rep_cruise_keywords_raw
-rawFileName = 'KOK1606.xlsx'
+rawFileName = 'AMT09.xlsx'
+keyword_col = 'cruise_keywords'
+import sys
+import pycmap
+sys.path.append('../')
+import insertFunctions as iF
+import config_vault as cfgv
+import pandas as pd
+sys.path.append('../dbCatalog/')
+import catalogFunctions as cF
+
+
+"""-----------------------------"""
+""" AMT09 CRUISE KEYWORDS"""
+"""-----------------------------"""
+
+cruise_name = 'AMT09'
+server = 'Rainier'
+rawFilePath = cfgv.rep_cruise_keywords_raw
+rawFileName = 'AMT09.xlsx'
 keyword_col = 'cruise_keywords'
 
 

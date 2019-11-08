@@ -7,6 +7,8 @@ import dbCore as dc
 import catalogInsert as cI
 sys.path.append('../login')
 import credentials as cr
+sys.path.append('../dbCruiseKeywords')
+from cruise_keyword_dict import cruise_keyword_dict
 import geopandas as gpd
 import shapely
 import calendar
@@ -14,13 +16,33 @@ import calendar
 """ Supporting/catalog table insert functions"""
 
 
+def insertCruiseKeywords(ID,df,server):
+    for keyword in df['cruise_keywords']:
+        query = (ID,keyword)
+        if len(keyword) > 0: # won't insert empty values
+            try: # Cannot insert duplicate entries, so skips if duplicate
+                print(query)
+                cI.lineInsert(server,'[opedia].[dbo].[tblCruise_Keywords]', '(cruise_ID, keywords)', query)
+            except Exception as e:
+                pass
+                # print(e)
+
+
+def getCruiseID(cruise_name):
+    """input cruise name, output cruise ID"""
+    api = pycmap.API()
+    df = api.cruise_by_name(cruise_name)
+    ID_df = pd.DataFrame({'ID': df['ID']})
+    ID = ID_df['ID'].iloc[0]
+    return ID
+
 def addDFtoKeywordDF(master_df, df,axis=0):
     df = pd.DataFrame({'cruise_keywords': df.values.flatten()})
     merge_df = pd.concat([master_df,df], ignore_index=True,sort=False)
     return merge_df
 
 def removeAnyRedundantWord(df): # takes dataframe and collapses to list, then rebuilds as single col dataframe
-    old_list = df.values.flatten()
+    old_list = df.values.flatten().astype(str)
     new_list = [i.split() for i in old_list]
     newer_list = [item for items in new_list for item in items]
     set_keywords = list(set(newer_list))
@@ -33,6 +55,8 @@ def getCruiseDetails(cruise_name):
     df = api.cruise_by_name(cruise_name)
     details_df = pd.DataFrame({'Nickname': df['Nickname'],'Name': df['Name'],'Ship_Name': df['Ship_Name'],'Chief_Name': df['Chief_Name']})
     return details_df
+
+
 
 
 def getCruiseYear(cruise_name):
@@ -95,6 +119,23 @@ def getOceanName(cruise_name):
     ocean_df = ocean_df.dropna()
     return ocean_df
 
+
+"""input: cruise name, returns: dataframe of cruise variable short name synonyms"""
+def getShortNameSynonyms(cruise_name):
+    short_name_df = getCruiseAssosiatedShortName(cruise_name)
+    lookup_df= short_name_df['Short_Name'].str.lower().map(cruise_keyword_dict)
+    lookup_df = lookup_df.dropna().tolist()
+    df_look_new = [val for sublist in lookup_df for val in sublist]
+    synonyms_df = pd.DataFrame({'synonyms': df_look_new})
+    return synonyms_df
+
+
+"""input: cruise name, returns: dataframe of cruise variable short names"""
+def getCruiseAssosiatedShortName(cruise_name):
+    api = pycmap.API(token=cr.api_key)
+    df = api.cruise_variables(cruise_name)
+    cruise_LN = pd.DataFrame({'Short_Name': df['Variable']})
+    return cruise_LN
 
 """input: cruise name, returns: dataframe of cruise variable long names"""
 def getCruiseAssosiatedLongName(cruise_name):
