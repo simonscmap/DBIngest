@@ -47,7 +47,7 @@ long_name_list = list(vars_metadata['var_long_name'])
 unit_list = list(ip.NaNtoNone(vars_metadata['var_unit']))
 
 spatial_res_list = list('1') * len(vars_metadata)# Irregular
-temporal_res_list = list('12') * len(vars_metadata) # One Second
+temporal_res_list = ['1','2']
 
 comment_list = list(ip.NaNtoNone(vars_metadata['var_comment']))
 Temporal_Coverage_Begin_list = [cF.findMinMaxDate(Dataset_Name,server)['minDate']]  * len(vars_metadata)

@@ -27,8 +27,8 @@ vars_metadata = ip.removeLeadingWhiteSpace(vars_metadata)
 
 
 """ Strings """
-DB='Opedia'
-Dataset_Name = 'tblHOE_legacy_4'
+DB='Rainier'
+Dataset_Name = dataset_metadata.iloc[0]['dataset_short_name']
 Dataset_Long_Name = dataset_metadata.iloc[0]['dataset_long_name']
 Data_Source = dataset_metadata.iloc[0]['dataset_source']
 Distributor = 'University of Hawaii, Manoa'
@@ -50,12 +50,12 @@ spatial_res_list = list('1') * len(vars_metadata)# Irregular
 temporal_res_list = list('7') * len(vars_metadata) # Irregular
 
 comment_list = list(ip.NaNtoNone(vars_metadata['var_comment']))
-Temporal_Coverage_Begin_list = [cF.findMinMaxDate(Dataset_Name,server)['minDate']]  * len(vars_metadata)
-Temporal_Coverage_End_list = [cF.findMinMaxDate(Dataset_Name,server)['maxDate']] * len(vars_metadata)
-Lat_Coverage_Begin_list = [cF.findSpatialBounds(Dataset_Name,server)['minLat']] * len(vars_metadata)
-Lat_Coverage_End_list = [cF.findSpatialBounds(Dataset_Name,server)['maxLat']] * len(vars_metadata)
-Lon_Coverage_Begin_list = [cF.findSpatialBounds(Dataset_Name,server)['minLon']] * len(vars_metadata)
-Lon_Coverage_End_list = [cF.findSpatialBounds(Dataset_Name,server)['maxLon']] * len(vars_metadata)
+Temporal_Coverage_Begin_list = [cF.findMinMaxDate(tableName,server)['minDate']]  * len(vars_metadata)
+Temporal_Coverage_End_list = [cF.findMinMaxDate(tableName,server)['maxDate']] * len(vars_metadata)
+Lat_Coverage_Begin_list = [cF.findSpatialBounds(tableName,server)['minLat']] * len(vars_metadata)
+Lat_Coverage_End_list = [cF.findSpatialBounds(tableName,server)['maxLat']] * len(vars_metadata)
+Lon_Coverage_Begin_list = [cF.findSpatialBounds(tableName,server)['minLon']] * len(vars_metadata)
+Lon_Coverage_End_list = [cF.findSpatialBounds(tableName,server)['maxLon']] * len(vars_metadata)
 Grid_Mapping_list = ['CRS']  * len(vars_metadata)
 Make_ID_list = ['1'] * len(vars_metadata)#Observation
 Sensor_ID_list = ['2'] * len(vars_metadata) # In-Situ
@@ -74,4 +74,5 @@ Study_Domain_ID_list = ['','','','1','1','1','1','1','1','3','4','4','4','4','4'
 # cF.tblDataset_References(Dataset_Name, reference_list,server)
 # cF.tblVariables(DB_list, Dataset_Name_list, short_name_list, long_name_list, unit_list,temporal_res_list, spatial_res_list, Temporal_Coverage_Begin_list, Temporal_Coverage_End_list, Lat_Coverage_Begin_list, Lat_Coverage_End_list, Lon_Coverage_Begin_list, Lon_Coverage_End_list, Grid_Mapping_list,Make_ID_list, Sensor_ID_list, Process_ID_list, Study_Domain_ID_list, comment_list,server)
 # cF.tblKeywords(vars_metadata, Dataset_Name,keyword_col,tableName,server)
-# ssf.updateStats(tableName,server)
+
+# ssf.buildVarDFSmallTables(tableName,server)

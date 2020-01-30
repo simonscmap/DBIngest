@@ -25,7 +25,7 @@ vars_metadata = pd.read_excel(rawFilePath + rawFileName,sheet_name = 1)
 
 """ Strings """
 DB='Opedia'
-Dataset_Name = 'tbl' + dataset_metadata.iloc[0]['dataset_short_name']
+Dataset_Name = dataset_metadata.iloc[0]['dataset_short_name']
 Dataset_Long_Name = dataset_metadata.iloc[0]['dataset_long_name']
 Data_Source = 'AVISO'
 Distributor = 'AVISO'

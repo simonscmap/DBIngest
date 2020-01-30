@@ -13,9 +13,8 @@ import summary_stats_func as ssf
 server = 'Rainier'
 tableName = 'tblKOK1606_Gradients1_Diazotroph'
 rawFilePath = cfgv.rep_gradients_1_raw
-rawFileName = 'KOK1606_Gradients1_Diazotroph_data.xlsx'
+rawFileName = 'KOK1606_Gradients1_Diazotroph_v2.xlsx'
 keyword_col = 'var_keywords'
-
 
 ############################
 
@@ -29,7 +28,7 @@ vars_metadata = pd.read_excel(rawFilePath + rawFileName,sheet_name = 2)
 
 """ Strings """
 DB='Opedia'
-Dataset_Name = 'tblKOK1606_Gradients1_Diazotroph'
+Dataset_Name = dataset_metadata.iloc[0]['dataset_short_name']
 Dataset_Long_Name = dataset_metadata.iloc[0]['dataset_long_name']
 Data_Source = dataset_metadata.iloc[0]['dataset_source']
 
@@ -45,6 +44,7 @@ reference_list = (dataset_metadata.iloc[0]['dataset_references']).split(";")
 DB_list = [DB] * len(vars_metadata)
 server_list = [server] * len(vars_metadata)
 Dataset_Name_list = [Dataset_Name] * len(vars_metadata)
+Table_Name_list = [tableName] * len(vars_metadata)
 short_name_list = list(vars_metadata['var_short_name'])
 long_name_list = list(vars_metadata['var_long_name'])
 unit_list = list(ip.NaNtoNone(vars_metadata['var_unit']))
@@ -53,12 +53,12 @@ spatial_res_list = list('1') * len(vars_metadata)# Irregular
 temporal_res_list = list('7') * len(vars_metadata) # Irregular
 
 comment_list = list(ip.NaNtoNone(vars_metadata['var_comment']))
-Temporal_Coverage_Begin_list = [cF.findMinMaxDate(Dataset_Name,server)['minDate']]  * len(vars_metadata)
-Temporal_Coverage_End_list = [cF.findMinMaxDate(Dataset_Name,server)['maxDate']] * len(vars_metadata)
-Lat_Coverage_Begin_list = [cF.findSpatialBounds(Dataset_Name,server)['minLat']] * len(vars_metadata)
-Lat_Coverage_End_list = [cF.findSpatialBounds(Dataset_Name,server)['maxLat']] * len(vars_metadata)
-Lon_Coverage_Begin_list = [cF.findSpatialBounds(Dataset_Name,server)['minLon']] * len(vars_metadata)
-Lon_Coverage_End_list = [cF.findSpatialBounds(Dataset_Name,server)['maxLon']] * len(vars_metadata)
+Temporal_Coverage_Begin_list = [cF.findMinMaxDate(tableName,server)['minDate']]  * len(vars_metadata)
+Temporal_Coverage_End_list = [cF.findMinMaxDate(tableName,server)['maxDate']] * len(vars_metadata)
+Lat_Coverage_Begin_list = [cF.findSpatialBounds(tableName,server)['minLat']] * len(vars_metadata)
+Lat_Coverage_End_list = [cF.findSpatialBounds(tableName,server)['maxLat']] * len(vars_metadata)
+Lon_Coverage_Begin_list = [cF.findSpatialBounds(tableName,server)['minLon']] * len(vars_metadata)
+Lon_Coverage_End_list = [cF.findSpatialBounds(tableName,server)['maxLon']] * len(vars_metadata)
 Grid_Mapping_list = ['CRS']  * len(vars_metadata)
 Make_ID_list = ['1'] * len(vars_metadata)#Observation
 Sensor_ID_list = ['2'] * len(vars_metadata) # In-Situ
@@ -75,9 +75,10 @@ Study_Domain_ID_list = ['3'] * len(vars_metadata) # Biology
 
 # cF.tblDatasets(DB, Dataset_Name, Dataset_Long_Name, Variables, Data_Source, Distributor, Description, Climatology,server)
 # cF.tblDataset_References(Dataset_Name, reference_list,server)
-# cF.tblVariables(DB_list, Dataset_Name_list, short_name_list, long_name_list, unit_list,temporal_res_list, spatial_res_list, Temporal_Coverage_Begin_list, Temporal_Coverage_End_list, Lat_Coverage_Begin_list, Lat_Coverage_End_list, Lon_Coverage_Begin_list, Lon_Coverage_End_list, Grid_Mapping_list,Make_ID_list, Sensor_ID_list, Process_ID_list, Study_Domain_ID_list, comment_list,server)
+# cF.tblVariables(DB_list, Dataset_Name_list, Table_Name_list, short_name_list, long_name_list, unit_list,temporal_res_list, spatial_res_list, Temporal_Coverage_Begin_list, Temporal_Coverage_End_list, Lat_Coverage_Begin_list, Lat_Coverage_End_list, Lon_Coverage_Begin_list, Lon_Coverage_End_list, Grid_Mapping_list, Make_ID_list,Sensor_ID_list, Process_ID_list, Study_Domain_ID_list, comment_list,server)
 # cF.tblKeywords(vars_metadata, Dataset_Name,keyword_col,tableName,server)
-#
-# """ new ssf function updates"""
+
+# # """ new ssf function updates"""
 # ssf.buildVarDFSmallTables(tableName,server)
-# cF.lineInsert('tblDataset_Cruises', '(Dataset_ID, Cruise_ID)', '(126,589)',server)
+# #
+# cF.lineInsert('tblDataset_Cruises', '(Dataset_ID, Cruise_ID)', '(139,589)',server)

@@ -15,10 +15,12 @@ server = 'Rainier'
 tableName = 'tblSeaFlow'
 rawFilePath = cfgv.rep_seaflow_raw
 rawFileName = 'SeaFlow_merged-2019-05-22_meta.xlsx'
+keyword_col = 'var_keywords'
+
 ############################
 
 dataset_metadata = pd.read_csv(rawFilePath + 'SeaFlow_ScientificData_metadata_v1.2.csv')
-vars_metadata = pd.read_csv(rawFilePath + 'SeaFlow_vars_metadata.csv')
+vars_metadata = pd.read_excel(rawFilePath + 'SeaFlow_metadata.xlsx',sheet_name='vars_meta_data')
 
 
 """ Strings """
