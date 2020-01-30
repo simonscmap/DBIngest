@@ -7,7 +7,6 @@ import pandas as pd
 sys.path.append('../dbCatalog/')
 import catalogFunctions as cF
 
-
 """-----------------------------"""
 """KOK1606_GRAD1 CRUISE KEYWORDS"""
 """-----------------------------"""
@@ -17,6 +16,7 @@ server = 'Rainier'
 rawFilePath = cfgv.rep_cruise_keywords_raw
 rawFileName = 'KOK1606.xlsx'
 keyword_col = 'cruise_keywords'
+
 
 
 ############################
@@ -33,7 +33,11 @@ details_df = cF.getCruiseDetails(cruise_name)
 short_name_df = cF.getCruiseAssosiatedShortName(cruise_name)
 # long_name_df = cF.getCruiseAssosiatedLongName(cruise_name)
 short_name_syn_df = cF.getShortNameSynonyms(cruise_name)
+dataset_name_df = cF.getCruiseAssosiatedDataset_Name(cruise_name)
+dataset_name_df = cF.getCruiseAssosiatedDataset_Name(cruise_name)
 
+df = cF.addDFtoKeywordDF(df, dataset_name_df)
+df = cF.addDFtoKeywordDF(df, dataset_name_df)
 df = cF.addDFtoKeywordDF(df, short_name_syn_df)
 df = cF.addDFtoKeywordDF(df, prov_df)
 df = cF.addDFtoKeywordDF(df, ocean_df)
@@ -43,6 +47,7 @@ df = cF.addDFtoKeywordDF(df, years_df)
 df = cF.addDFtoKeywordDF(df, details_df)
 df = cF.addDFtoKeywordDF(df, short_name_df)
 # df = cF.addDFtoKeywordDF(df, long_name_df)
+
 df = cF.removeDuplicates(df)
 df = cF.stripWhitespace(df,keyword_col)
 df = cF.removeAnyRedundantWord(df)
