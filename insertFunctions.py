@@ -1,5 +1,6 @@
 import os, os.path
 import sys
+import xarray as xr
 sys.path.append('../login')
 sys.path.append('../../config')
 import pandas as pd
@@ -30,9 +31,17 @@ def lineInsert(server, tableName, columnList ,query):
     cursor = conn.cursor()
     insertQuery = """INSERT INTO %s %s VALUES %s """ % (tableName, columnList, query)
     print(insertQuery)
-    # cursor.execute(insertQuery)
-    # conn.commit()
+    cursor.execute(insertQuery)
+    conn.commit()
 
+
+def netcdf_2_dataframe(netcdf_file,usecols = None):
+    xdf = xr.open_dataset(netcdf_file)
+    if usecols != None:
+        xdf = xdf[usecols]
+    df = xdf.to_dataframe()
+    df.reset_index(inplace=True)
+    return df, xdf
 
 def findID_CRUISE(cruiseName):
     """ this function pulls the ID value from the [tblCruises]"""

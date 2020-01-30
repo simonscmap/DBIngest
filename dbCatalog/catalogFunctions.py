@@ -1,12 +1,12 @@
+import sys
 
+sys.path.append('../login')
+import credentials as cr
 import pycmap
 import pandas as pd
-import sys
 sys.path.append('../')
 import dbCore as dc
 import catalogInsert as cI
-sys.path.append('../login')
-import credentials as cr
 sys.path.append('../dbCruiseKeywords')
 from cruise_keyword_dict import cruise_keyword_dict
 import geopandas as gpd
@@ -27,7 +27,6 @@ def insertCruiseKeywords(ID,df,server):
                 pass
                 # print(e)
 
-
 def getCruiseID(cruise_name):
     """input cruise name, output cruise ID"""
     api = pycmap.API()
@@ -47,6 +46,7 @@ def removeAnyRedundantWord(df): # takes dataframe and collapses to list, then re
     newer_list = [item for items in new_list for item in items]
     set_keywords = list(set(newer_list))
     df_set = pd.DataFrame({'cruise_keywords': set_keywords})
+    df_set = df_set.dropna()
     return df_set
 
 def getCruiseDetails(cruise_name):
@@ -55,8 +55,6 @@ def getCruiseDetails(cruise_name):
     df = api.cruise_by_name(cruise_name)
     details_df = pd.DataFrame({'Nickname': df['Nickname'],'Name': df['Name'],'Ship_Name': df['Ship_Name'],'Chief_Name': df['Chief_Name']})
     return details_df
-
-
 
 
 def getCruiseYear(cruise_name):
@@ -130,6 +128,14 @@ def getShortNameSynonyms(cruise_name):
     return synonyms_df
 
 
+"""input: cruise name, returns: dataframe of cruise assosiated Dataset Name"""
+def getCruiseAssosiatedDataset_Name(cruise_name):
+    api = pycmap.API(token=cr.api_key)
+    df = api.cruise_variables(cruise_name)
+    cruise_TN = pd.DataFrame({'Dataset_Name': df['Dataset_Name']})
+    return cruise_TN
+
+
 """input: cruise name, returns: dataframe of cruise variable short names"""
 def getCruiseAssosiatedShortName(cruise_name):
     api = pycmap.API(token=cr.api_key)
@@ -161,11 +167,21 @@ def lineInsert(tableName, columnList ,query, server):
     conn.commit()
 
 
-def findID(datasetName, catalogTable, server):
+
+def findID(datasetName, server, catalogTable):
     """ this function pulls the ID value from the [tblDatasets] for the tblDataset_References to use """
     conn = dc.dbConnect(server)
     cursor = conn.cursor()
     cur_str = """select [ID] FROM [Opedia].[dbo].[""" + catalogTable + """] WHERE [Dataset_Name] = '""" + datasetName + """'"""
+    cursor.execute(cur_str)
+    IDvar = (cursor.fetchone()[0])
+    return IDvar
+
+def findDatasetID(tableName, server):
+    """ this function pulls the DatasetID value from the [tblVariables] """
+    conn = dc.dbConnect(server)
+    cursor = conn.cursor()
+    cur_str = """select [Dataset_ID] FROM [Opedia].[dbo].[tblVariables] WHERE [Table_Name] = '""" + tableName + """'"""
     cursor.execute(cur_str)
     IDvar = (cursor.fetchone()[0])
     return IDvar
@@ -218,33 +234,84 @@ def findVariables(datasetName, catalogTable,server):
     varlist = IDvar.split(',')
     return varlist
 
+
+def findKeywordIDs(Dataset_ID, server):
+    conn = dc.dbConnect(server)
+    cursor = conn.cursor()
+    cur_str = """select [ID] FROM [Opedia].[dbo].[tblVariables] WHERE [Dataset_ID] = '""" + Dataset_ID + """'"""
+    cursor.execute(cur_str)
+    IDvar = (cursor.fetchall())
+    keywordIDS = [row[0] for row in IDvar]
+    return keywordIDS
+
+
+
+def deleteFromtblKeywords(datasetName,server):
+    Dataset_ID = str(findID(datasetName, server,catalogTable = 'tblDatasets'))
+    keywordIDS = findKeywordIDs(Dataset_ID, server)
+    for keywordID in keywordIDS:
+        conn = dc.dbConnect(server)
+        cursor = conn.cursor()
+        cur_str = """DELETE FROM [Opedia].[dbo].[tblKeywords] WHERE [var_ID] = """ + str(keywordID)
+        print(cur_str)
+        cursor.execute(cur_str)
+        conn.commit()
+
+def deleteFromtblVariables(datasetName,server):
+    Dataset_ID = str(findID(datasetName, server,catalogTable = 'tblDatasets'))
+    conn = dc.dbConnect(server)
+    cursor = conn.cursor()
+    cur_str = """DELETE FROM [Opedia].[dbo].[tblVariables] WHERE [Dataset_ID] = """ + str(Dataset_ID)
+    print(cur_str)
+    cursor.execute(cur_str)
+    conn.commit()
+
+def deleteFromtblDataset_Stats(datasetName,server):
+    Dataset_ID = str(findID(datasetName, server,catalogTable = 'tblDatasets'))
+    conn = dc.dbConnect(server)
+    cursor = conn.cursor()
+    # cur_str = """DELETE FROM [Opedia].[dbo].[tblDataset_Stats] WHERE [Dataset_ID] = """ + str(Dataset_ID)
+    cur_str = """DELETE FROM [Opedia].[dbo].[tblDataset_Stats_ID] WHERE [Dataset_ID] = """ + str(Dataset_ID)
+
+    cursor.execute(cur_str)
+    conn.commit()
+
+def deleteFromtblDataset_Cruises(datasetName,server):
+    Dataset_ID = str(findID(datasetName, server,catalogTable = 'tblDatasets'))
+    conn = dc.dbConnect(server)
+    cursor = conn.cursor()
+    cur_str = """DELETE FROM [Opedia].[dbo].[tblDataset_Cruises] WHERE [Dataset_ID] = """ + str(Dataset_ID)
+    cursor.execute(cur_str)
+    conn.commit()
+
+def deleteFromtblDataset_References(datasetName,server):
+    Dataset_ID = str(findID(datasetName, server,catalogTable = 'tblDatasets'))
+    conn = dc.dbConnect(server)
+    cursor = conn.cursor()
+    cur_str = """DELETE FROM [Opedia].[dbo].[tblDataset_References] WHERE [Dataset_ID] = """ + str(Dataset_ID)
+    cursor.execute(cur_str)
+    conn.commit()
+
+def deleteFromtblDatasets(datasetName,server):
+    Dataset_ID = str(findID(datasetName, server,catalogTable = 'tblDatasets'))
+    conn = dc.dbConnect(server)
+    cursor = conn.cursor()
+    cur_str = """DELETE FROM [Opedia].[dbo].[tblDatasets] WHERE [ID] = """ + Dataset_ID
+    cursor.execute(cur_str)
+    conn.commit()
+
+
 def deleteCatalogTables(datasetName,server):
     contYN = input('Are you sure you want to delete all of the catalog tables for ' + datasetName + ' ?  [yes/no]: ' )
     if contYN == 'yes':
-        """ delete tblVariables, then tblDataset_References then finally tblDatasets """
-        print('connecting to database...')
-        conn = dc.dbConnect()
-        cursor = conn.cursor()
-        print('db connection successful')
-
-        Dataset_ID = str(findID(datasetName, catalogTable = 'tblDatasets')) #datasetName
-        print('Dataset ID used to remove catalog tables: ', Dataset_ID)
-
-        cur_str = """DELETE FROM [Opedia].[dbo].[tblVariables] WHERE [Dataset_ID] = """ + Dataset_ID
-        cursor.execute(cur_str)
-        print('-- Instances of ' + datasetName + ' removed from tblVariables')
-
-        cur_str = """DELETE FROM [Opedia].[dbo].[tblDataset_References] WHERE [Dataset_ID] = """ + Dataset_ID
-        cursor.execute(cur_str)
-        print('-- Instances of ' + datasetName + ' removed from tblDataset_References')
-
-        cur_str = """DELETE FROM [Opedia].[dbo].[tblDatasets] WHERE [ID] = """ + Dataset_ID
-        cursor.execute(cur_str)
-        print('-- Instances of ' + datasetName + ' removed from tblDatasets')
+        deleteFromtblKeywords(datasetName,server)
+        deleteFromtblVariables(datasetName,server)
+        deleteFromtblDataset_Stats(datasetName,server)
+        deleteFromtblDataset_Cruises(datasetName,server)
+        deleteFromtblDataset_References(datasetName,server)
+        deleteFromtblDatasets(datasetName,server)
         print('Commiting changes...')
-        conn.commit()
-        conn.rollback()
-        print('Changes to dB commited')
+
     else:
         print('Catalog tables for ' + datasetName + ' not deleted')
 
@@ -265,24 +332,25 @@ def tblDatasets(DB, Dataset_Name, Dataset_Long_Name, Variables, Data_Source, Dis
         cI.lineInsert(server,'[opedia].[dbo].[tblDatasets]', columnList, query)
 
 def tblDataset_References(Dataset_Name, reference_list,server):
-    IDvar = findID(Dataset_Name, 'tblDatasets',server)
+    IDvar = findID(Dataset_Name, server,'tblDatasets')
     columnList = '(Dataset_ID, Reference)'
     for ref in reference_list:
         query = (IDvar, ref)
         cI.lineInsert(server,'[opedia].[dbo].[tblDataset_References]', columnList, query)
     print('Inserting data into tblDataset_References')
 
-def tblVariables(DB_list, Dataset_Name_list, short_name_list, long_name_list, unit_list,temporal_res_list, spatial_res_list, Temporal_Coverage_Begin_list, Temporal_Coverage_End_list, Lat_Coverage_Begin_list, Lat_Coverage_End_list, Lon_Coverage_Begin_list, Lon_Coverage_End_list, Grid_Mapping_list, Make_ID_list,Sensor_ID_list, Process_ID_list, Study_Domain_ID_list, comment_list,server):
+
+def tblVariables(DB_list, Dataset_Name_list, Table_Name_list, short_name_list, long_name_list, unit_list,temporal_res_list, spatial_res_list, Temporal_Coverage_Begin_list, Temporal_Coverage_End_list, Lat_Coverage_Begin_list, Lat_Coverage_End_list, Lon_Coverage_Begin_list, Lon_Coverage_End_list, Grid_Mapping_list, Make_ID_list,Sensor_ID_list, Process_ID_list, Study_Domain_ID_list, comment_list,server):
     Dataset_ID_raw = cI.findID(Dataset_Name_list[0], 'tblDatasets', server)
     dataset_ID_list = [Dataset_ID_raw] * len(DB_list)
     columnList = '(DB, Dataset_ID, Table_Name, Short_Name, Long_Name, Unit, Temporal_Res_ID, Spatial_Res_ID, Temporal_Coverage_Begin, Temporal_Coverage_End, Lat_Coverage_Begin, Lat_Coverage_End, Lon_Coverage_Begin, Lon_Coverage_End, Grid_Mapping, Make_ID, Sensor_ID, Process_ID, Study_Domain_ID, Comment)'
-    for DB, dataset_ID, Dataset_Name, short_name, long_name, unit, temporal_res, spatial_res, Temporal_Coverage_Begin, Temporal_Coverage_End, Lat_Coverage_Begin, Lat_Coverage_End, Lon_Coverage_Begin, Lon_Coverage_End, Grid_Mapping, Make_ID, Sensor_ID, Process_ID, Study_Domain_ID,  comment in zip(DB_list, dataset_ID_list, Dataset_Name_list, short_name_list, long_name_list, unit_list, temporal_res_list, spatial_res_list, Temporal_Coverage_Begin_list, Temporal_Coverage_End_list, Lat_Coverage_Begin_list, Lat_Coverage_End_list, Lon_Coverage_Begin_list, Lon_Coverage_End_list, Grid_Mapping_list, Make_ID_list, Sensor_ID_list, Process_ID_list, Study_Domain_ID_list,  comment_list):
-        query = (DB, dataset_ID, Dataset_Name, short_name, long_name, unit, temporal_res, spatial_res, Temporal_Coverage_Begin, Temporal_Coverage_End, Lat_Coverage_Begin, Lat_Coverage_End, Lon_Coverage_Begin, Lon_Coverage_End, Grid_Mapping, Make_ID, Sensor_ID, Process_ID, Study_Domain_ID,  comment)
+    for DB, dataset_ID, Table_Name, short_name, long_name, unit, temporal_res, spatial_res, Temporal_Coverage_Begin, Temporal_Coverage_End, Lat_Coverage_Begin, Lat_Coverage_End, Lon_Coverage_Begin, Lon_Coverage_End, Grid_Mapping, Make_ID, Sensor_ID, Process_ID, Study_Domain_ID,  comment in zip(DB_list, dataset_ID_list, Table_Name_list, short_name_list, long_name_list, unit_list, temporal_res_list, spatial_res_list, Temporal_Coverage_Begin_list, Temporal_Coverage_End_list, Lat_Coverage_Begin_list, Lat_Coverage_End_list, Lon_Coverage_Begin_list, Lon_Coverage_End_list, Grid_Mapping_list, Make_ID_list, Sensor_ID_list, Process_ID_list, Study_Domain_ID_list,  comment_list):
+        query = (DB, dataset_ID, Table_Name, short_name, long_name, unit, temporal_res, spatial_res, Temporal_Coverage_Begin, Temporal_Coverage_End, Lat_Coverage_Begin, Lat_Coverage_End, Lon_Coverage_Begin, Lon_Coverage_End, Grid_Mapping, Make_ID, Sensor_ID, Process_ID, Study_Domain_ID,  comment)
         cI.lineInsert(server,'[opedia].[dbo].[tblVariables]', columnList, query)
     print('Inserting data into tblVariables')
 
 def tblKeywords(df,Dataset_Name, keyword_col,tableName,server):
-    IDvar = findID(Dataset_Name, 'tblDatasets',server)
+    IDvar = findID(Dataset_Name,server, 'tblDatasets')
     for index,row in df.iterrows():
         VarID = findVarID(IDvar, df.loc[index,'var_short_name'],  server)
         # keyword_list = df.loc[index,keyword_col]
@@ -293,6 +361,7 @@ def tblKeywords(df,Dataset_Name, keyword_col,tableName,server):
             keyword = keyword.lstrip()
             print(VarID, keyword)
             query = (VarID, keyword)
+            print(query)
             if len(keyword) > 0: # won't insert empty values
                 try: # Cannot insert duplicate entries, so skips if duplicate
                     cI.lineInsert(server,'[opedia].[dbo].[tblKeywords]', '(var_ID, keywords)', query)

@@ -32,8 +32,11 @@
 # details_df = cF.getCruiseDetails(cruise_name)
 # short_name_df = cF.getCruiseAssosiatedShortName(cruise_name)
 # # long_name_df = cF.getCruiseAssosiatedLongName(cruise_name)
-# #
-# #
+# short_name_syn_df = cF.getShortNameSynonyms(cruise_name)
+# dataset_name_df = cF.getCruiseAssosiatedDataset_Name(cruise_name)
+#
+# df = cF.addDFtoKeywordDF(df, dataset_name_df)
+# df = cF.addDFtoKeywordDF(df, short_name_syn_df)
 # df = cF.addDFtoKeywordDF(df, prov_df)
 # df = cF.addDFtoKeywordDF(df, ocean_df)
 # df = cF.addDFtoKeywordDF(df, seasons_df)
