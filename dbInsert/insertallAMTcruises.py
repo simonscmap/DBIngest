@@ -18,23 +18,32 @@ tableName = 'tblCruise'
 
 """ time, lat, lon, temp,sal,par
 AMT12 is when format changes
+AMT_11	11/10/2000 10:50:10
+AMT_12	2003-05-13 12:24:00
+
 """
+
+
+
+
+
+
 def createMasterAMT():
     master_df = pd.DataFrame(columns = ['Cruise_name','time', 'lat', 'lon', 'temp', 'temp_flag', 'salinity', 'salinity_flag', 'PAR', 'PAR_flag'])
     rawFilePath = cfgv.rep_AMT_cruises_raw
     os.chdir(rawFilePath)
     AMT_list = np.sort(glob.glob('*.csv*'))
     for AMT_cruise in AMT_list:
+        print(AMT_cruise)
         df = pd.read_csv(AMT_cruise, sep=',')
-        #first exception, merge year+time into datetime col with format
         if 'year' in df.columns:
             try:
                 df['time'] = pd.to_datetime(df['year'] + ' ' + df['time'], format='%d/%m/%Y %H:%M:%S')
-                del df['year']
             except:
                 df['time'] = pd.to_datetime(df['year'] + ' ' + df['time'], format='%Y/%m/%d %H:%M:%S')
-                del df['year']
 
+        else:
+            df['time'] = pd.to_datetime(df['time'], format='%d/%m/%Y %H:%M:%S')
         if 'PAR' not in df.columns:
             df['PAR'] = None
             df['PAR_flag'] = None
@@ -44,15 +53,19 @@ def createMasterAMT():
         df = df[(df['lat_flag'] !='I') & (df['lat_flag'] !='M')  & (df['lat_flag'] !='N') & (df['lat_flag'] !='L')]
         df = df[(df['lon_flag'] !='I') & (df['lon_flag'] !='M')  & (df['lon_flag'] !='N') & (df['lat_flag'] !='L')]
         df = df[['Cruise_name','time', 'lat', 'lon',  'temp', 'temp_flag', 'salinity', 'salinity_flag', 'PAR', 'PAR_flag']]
+        print(max(df['time']) - min(df['time']))
+        print(' ')
+
+
 
         master_df = master_df.append(df)
 
-    # master_df.to_csv('amt/master_AMT.csv',sep = ',',index=False)
+
+    master_df.to_csv('amt/master_AMT.csv',sep = ',',index=False)
     return master_df
 
 # df = createMasterAMT()
 
-# createMasterAMT()
 def insertAMTCruises():
     server='Rainier'
     cruise = 'AMT_cruises'
@@ -88,10 +101,8 @@ def insertAMTCruiseTraj():
         Cruise_ID = iF.findID_CRUISE(Cruise_name[0:3]  + Cruise_name[-2:])
         cruise_df['Cruise_ID'] = Cruise_ID
         cruise_df = ip.removeMissings(['time','lat', 'lon'], cruise_df)
-        cruise_df = ip.convertYYYYMMDD(cruise_df)
         cruise_df = ip.NaNtoNone(cruise_df)
         cruise_df = ip.colDatatypes(cruise_df)
-        cruise_df = ip.convertYYYYMMDD(cruise_df)
         cruise_df = ip.removeDuplicates(cruise_df)
         cruise_df = cruise_df[['Cruise_ID','time','lat','lon']]
         cruise_df.to_csv(export_path, index=False)
@@ -253,4 +264,4 @@ def insertAMTCruisePAR():
 # insertAMTCruises_ST_bounds()
 # insertAMTCruiseTemperature()
 # insertAMTCruiseSalinity()
-insertAMTCruisePAR()
+# insertAMTCruisePAR()

@@ -1,7 +1,7 @@
 
 import numpy as np
 import pandas as pd
-
+import xarray as xr
 
 def convertYYYYMMDD(df, col):
     # df['time'] = pd.to_datetime(df['time'].astype(str), format='%Y-%m-%d')
@@ -56,13 +56,13 @@ def NaNtoNone(df):
 
 def colDatatypes(df):
     try:
-        df['time']=pd.to_datetime(df['time'], format='%Y-%m-%d')
+        df['time']=pd.to_datetime(df['time']).dt.strftime('%Y-%m-%d %H:%M:%S')
         df['lat'] = df['lat'].astype(float)
         df['lon'] = df['lon'].astype(float)
         df['depth'] = df['depth'].astype(float)
         return df
     except:
-        df['time']=pd.to_datetime(df['time'], format='%Y-%m-%d')
+        df['time']=pd.to_datetime(df['time']).dt.strftime('%Y-%m-%d %H:%M:%S')
         df['lat'] = df['lat'].astype(float)
         df['lon'] = df['lon'].astype(float)
         return df
@@ -109,6 +109,14 @@ def arrangeColumns(cols, df):
     df = df[cols]
     return df
 
+
+def netcdf_2_dataframe(netcdf_file,usecols = None):
+    xdf = xr.open_dataset(netcdf_file)
+    if usecols != None:
+        xdf = xdf[usecols]
+    df = xdf.to_dataframe()
+    df.reset_index(inplace=True)
+    return df, xdf
 
 def sortByDepthLatLon_AddClim(df, export_path, lonName, latName, depthName):
     df = pd.read_csv(export_path)
