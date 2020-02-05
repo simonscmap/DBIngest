@@ -317,6 +317,7 @@ def deleteCatalogTables(datasetName,server):
 
 def tblDatasets(DB, Dataset_Name, Dataset_Long_Name, Variables, Data_Source, Distributor, Description, Climatology,server):
     """ create a tuple out of variables and columns -- in future edit Climatology should be part of insert prep function to reduce repitition """
+    Description = Description.replace('\xa0', ' ') 
     if Climatology == 'NULL':
         query = (DB, Dataset_Name, Dataset_Long_Name, Variables, Data_Source, Distributor, Description)
         columnList = '(DB,Dataset_Name, Dataset_Long_Name, Variables, Data_Source, Distributor, Description)'
