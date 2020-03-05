@@ -5,11 +5,16 @@ This document describes the common file structure to store the data/meta-data pr
 ## Dataset Filename Convention
 Dataset filename:
 `<dataset_short_name>`\_`<dataset_release_data>`\_v`<dataset_version>`.xlxs
+
 Example: seaflow\_2018-05-25\_v1.0.xlxs
 
 `<dataset_short_name>`: short name of the dataset length: less
-than 50 characters `<dataset_release_data>`: date of dataset
+than 50 characters
+
+`<dataset_release_data>`: date of dataset
 release format: %Y-%m-%d note: zero padding required
+
+
 `<dataset_version>`: associated dataset version length: less than
 50 characters
 
@@ -24,11 +29,14 @@ Columns by order:
 	- note: there is a blank space between date and time
 	- note: zero padding required
 
+
+
 2. **lat**: latitude
 	- type: float
 	- format: Decimal (not military grid system)
 	- unit: degree north
 	- range: [-90, 90]
+
 
 3. **lon**: longitude
 	- type: float
@@ -36,10 +44,12 @@ Columns by order:
 	- unit: degree east
 	- range: [-180, 180]
 
+
 4. **depth**: depth
     - type: float
     - unit: meters
     - range: [0, ∞]
+
 
 5. **&lt;v_1&gt;**: first variable (short name)
 
@@ -171,7 +181,7 @@ Columns by order:
 10. **var_keywords**: keywords pertinent to the variable (separated by comma) - These are *extremely* important for others to 	locate your dataset.
 	- type: string
 	- length: <500 chars
-	- examples: [pro, prochloro, prochlorococcus, seaflow, flow, cytometry, flow-cytometry, insitu, in-situ, cruise, observation, rep, reprocessed, bio, biology, armbrust, UW, University of Washington, abundance,cell abundance, ...]
+	- examples: [pro, prochloro, prochlorococcus, seaflow, flow, cytometry, flow-cytometry, insitu, in-situ, cruise, observation, rep, reprocessed, bio, biology, armbrust, UW, University of Washington, abundance,cell abundance]
 
 		**Keywords are variable-specific and case-insensitive. Please separate each keyword by comma. The suggested format for each variable keyword list is:**
 
