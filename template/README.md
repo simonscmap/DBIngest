@@ -162,23 +162,19 @@ Columns by order:
 	- length: <50 chars
 	- examples: [Hourly, Daily, Irregular, ...]
 
-7. **var_missing_value**: placeholder for missing values
-	- type: string
-	- length: <50 chars
-	- examples: [empty cell, nan, unknown, #FFFF, -999, ...]		
 
-8. **var_discipline**: the closest discipline(s) associated with the variable
+7. **var_discipline**: the closest discipline(s) associated with the variable
 	- type: string
 	- length: <100 chars
 	- examples: [Physics, Chemistry, Biology, BioGeoChemistry, ...]		
 
-9. **visualize**: Is this variable visualizable? If not, it can be excluded from the Simons CMAP web application.
+8. **visualize**: Is this variable visualizable? If not, it can be excluded from the Simons CMAP web application.
 	- type: int
 	- length: <2 chars
 	- examples: [0 is not visualizable, 1 is visualizable]. ex: station # = 0 (non visualize), prochlorococcus abundance = 1 (visualize)
 
 
-10. **var_keywords**: keywords pertinent to the variable (separated by comma) - These are *extremely* important for others to 	locate your dataset.
+9. **var_keywords**: keywords pertinent to the variable (separated by comma) - These are *extremely* important for others to 	locate your dataset.
 	- type: string
 	- length: <500 chars
 	- examples: [pro, prochloro, prochlorococcus, seaflow, flow, cytometry, flow-cytometry, insitu, in-situ, cruise, observation, rep, reprocessed, bio, biology, armbrust, UW, University of Washington, abundance,cell abundance]
@@ -197,6 +193,6 @@ Columns by order:
 
 			*pro, prochloro, prochlorococcus, seaflow, flow, cytometry, flow-cytometry, insitu, in-situ, cruise, observation, rep, reprocessed, bio, biology, armbrust, UW, University of Washington, abundance,cell abundance*
 
-11. **var_comment**: any other comment about the variable
+10. **var_comment**: any other comment about the variable
 	- type: string
 	- length: no limit		
