@@ -98,7 +98,11 @@ Columns by order:
 	- type: string
 	- length: <100 chars
 
-9. **dataset_doi**: digital object identifier (doi) associated with the dataset. Below is an example list of entities that may issue and link your dataset to a unique doi:
+9. **contact_email**: Email address of data submitter. Note: This will be public information in the database.
+  	- type: string
+  	- length: <100 chars
+
+10. **dataset_doi**: digital object identifier (doi) associated with the dataset. Below is an example list of entities that may issue and link your dataset to a unique doi:
 	- [Dryad](https://datadryad.org/) (only accepts published datsets)
 	- [FigShare](https://figshare.com/)
 	- [Zenodo](https://zenodo.org/)
@@ -113,19 +117,19 @@ Alternatively, one may choose to obtain the dataset doi by submitting their data
 	- [NASA Goddard](https://disc.gsfc.nasa.gov/)
 	- [NERC](https://nerc.ukri.org/research/sites/data/)
 
-10. **dataset_history**: notes regarding the evolution of the dataset with respect to the previous versions, if applicable
+11. **dataset_history**: notes regarding the evolution of the dataset with respect to the previous versions, if applicable
 	- type: string
 	- length: no limit
 
-11. **dataset_description**: any additional descriptions
+12. **dataset_description**: any additional descriptions
 	- type: string
 	- length: no limit
 
-12. **dataset_references**: links/citations associated with the dataset documentations/publications (enter each ref. in a separate row)
+13. **dataset_references**: links/citations associated with the dataset documentations/publications (enter each ref. in a separate row)
 	- type: string
 	- length: <500 chars per item
 
-13. **climatology**: is the dataset a climatology product? (<null if not climatology, 1 climatology> )
+14. **climatology**: is the dataset a climatology product? (<null if not climatology, 1 climatology> )
 	- type: string
 	- length: <10 chars
 
