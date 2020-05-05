@@ -102,34 +102,20 @@ Columns by order:
   	- type: string
   	- length: <100 chars
 
-10. **dataset_doi**: digital object identifier (doi) associated with the dataset. Below is an example list of entities that may issue and link your dataset to a unique doi:
-	- [Dryad](https://datadryad.org/) (only accepts published datsets)
-	- [FigShare](https://figshare.com/)
-	- [Zenodo](https://zenodo.org/)
-	- [Open Science Framework](https://osf.io/) (more details [here](http://help.osf.io/m/faqs/l/726460-faqs))
-	- [Harvard Dataverse](https://dataverse.harvard.edu/)
-Alternatively, one may choose to obtain the dataset doi by submitting their dataset to a domain-specific repository. Note that each repository has its own submission requirements. Below are a few suggestions:
-	- [NCEI](https://www.nodc.noaa.gov/)
-	- [ORNL DAAC](https://daac.ornl.gov/)
-	- [EDI](https://portal.edirepository.org/nis/home.jsp)
-	- [PANGAEA](https://www.pangaea.de/)
-	- [SEANOE](http://www.seanoe.org/)
-	- [NASA Goddard](https://disc.gsfc.nasa.gov/)
-	- [NERC](https://nerc.ukri.org/research/sites/data/)
 
-11. **dataset_history**: notes regarding the evolution of the dataset with respect to the previous versions, if applicable
+10. **dataset_history**: notes regarding the evolution of the dataset with respect to the previous versions, if applicable
 	- type: string
 	- length: no limit
 
-12. **dataset_description**: any additional descriptions
+11. **dataset_description**: any additional descriptions
 	- type: string
 	- length: no limit
 
-13. **dataset_references**: links/citations associated with the dataset documentations/publications (enter each ref. in a separate row)
+12. **dataset_references**: links/citations associated with the dataset documentations/publications (enter each ref. in a separate row)
 	- type: string
 	- length: <500 chars per item
 
-14. **climatology**: is the dataset a climatology product? (<null if not climatology, 1 climatology> )
+13. **climatology**: is the dataset a climatology product? (<null if not climatology, 1 climatology> )
 	- type: string
 	- length: <10 chars
 
