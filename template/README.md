@@ -61,63 +61,68 @@ Add more columns similar to the last column, if dataset has more than one variab
 Columns by order:
 
 1. **dataset_short_name**: dataset short name
-	- type: string
-	- length: <50 chars
-	- examples: BATS Bacteria Production
+    - type: string
+    - length: <50 chars
+    - short, human readable name of your dataset.
+    - example: BATS Bacteria Production
 
 2. **dataset_long_name**: descriptive dataset name
-	- type: string
-	- length: <500 chars
-	- examples: Bermuda Atlantic Time-series Study (BATS) Bacteria Production
+    - type: string
+    - length: <500 chars
+    - Descriptive human readable name of your dataset
+    - example: Bermuda Atlantic Time-series Study (BATS) Bacteria Production
 
 3. **dataset_version**: dataset version
-	- type: string
-	- length: <50 chars
-	- examples: V1, Version 3.5
+    - type: string
+    - length: <50 chars
+    - examples: V1, Version 3.5
 
 4. **dataset_release_date**: dataset release date
-	- type: date
-	- format: %Y-%m-%d  (zero padding required)
-	- examples: 2002-02-02
+    - type: date
+    - format: %Y-%m-%d (zero padding required)
 
 5. **dataset_make**: how dataset is made (fixed options= [assimilation, model, observation])
-	- type: string
-	- length: <50 chars
+    - type: string
+    - length: <50 chars
 
 6. **dataset_source**: name of your lab and/or institution
-	- type: string
-	- length: <100 chars
-	- examples: Bermuda Institute of Ocean Sciences
+    - type: string
+    - length: <100 chars
+    - example: Bermuda Institute of Ocean Sciences
 
-7. **dataset_distributor**: name of the distributor of the data product (optional: if the dataset source differs from the distributor)
-	- type: string
-	- length: <100 chars
-	- examples: Distributed by NASA PODAAC
+7. **offical_cruise_name(s)**: If applicable, list official cruise name associated with your dataset. (enter each ref. in a separate row). (optional).
+    - type: string
+    - example:  KOK1606
 
-8. **dataset_acknowledgement**: Any acknowledgement(s) for this dataset
-	- type: string
-	- length: <100 chars
+8. **dataset_distributor**: name of the distributor of the data product (optional: if the dataset source differs from the distributor).
+    - type: string
+    - length: <100 chars
+    - example:  Distributed by NASA PODAAC
 
-9. **contact_email**: Email address of data submitter. Note: This will be public information in the database.
+9. **dataset_acknowledgement**: Any acknowledgement(s) for this dataset
+  	- type: string
+  	- length: <100 chars
+
+10. **contact_email**: Email address of data submitter. Note: This will be public information in the database.
   	- type: string
   	- length: <100 chars
 
 
-10. **dataset_history**: notes regarding the evolution of the dataset with respect to the previous versions, if applicable
-	- type: string
-	- length: no limit
+11. **dataset_history**: notes regarding the evolution of the dataset with respect to the previous versions, if applicable.
+  	- type: string
+  	- length: <100 chars
 
-11. **dataset_description**: any additional descriptions
-	- type: string
-	- length: no limit
+12. **dataset_description**: A description of your dataset detailing collection and processing methodology.
+  	- type: string
+  	- length: no limit
 
-12. **dataset_references**: links/citations associated with the dataset documentations/publications (enter each ref. in a separate row)
-	- type: string
-	- length: <500 chars per item
+13. **dataset_references**: Links/citations associated with the dataset documentations/publications (enter each ref. in a separate row). (optional).
+  	- type: string
+  	- length: <500 chars per item
 
-13. **climatology**: is the dataset a climatology product? (<null if not climatology, 1 climatology> )
-	- type: string
-	- length: <10 chars
+14. **climatology**: is the dataset a climatology product? (<null if not climatology, 1 climatology>)
+  	- type: string
+  	- length: <10 chars
 
 
 
