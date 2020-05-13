@@ -90,7 +90,7 @@ Columns by order:
     - length: <100 chars
     - example: Bermuda Institute of Ocean Sciences
 
-7. **offical_cruise_name(s)**: If applicable, list official cruise name associated with your dataset. (enter each ref. in a separate row). (optional).
+7. **official_cruise_name(s)**: If applicable, list official cruise name associated with your dataset. (enter each ref. in a separate row). (optional).
     - type: string
     - example:  KOK1606
 
