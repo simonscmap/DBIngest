@@ -92,7 +92,9 @@ Columns by order:
 
 7. **official_cruise_name(s)**: If applicable, list official cruise name associated with your dataset. (enter each ref. in a separate row). (optional).
     - type: string
-    - example:  KOK1606
+    - example:  KOK17. **official_cruise_name(s)**: If applicable, list official cruise name associated with your dataset. (enter each ref. in a separate row). (optional).
+    - type: string
+    - example:  KOK1606606
 
 8. **dataset_distributor**: name of the distributor of the data product (optional: if the dataset source differs from the distributor).
     - type: string
